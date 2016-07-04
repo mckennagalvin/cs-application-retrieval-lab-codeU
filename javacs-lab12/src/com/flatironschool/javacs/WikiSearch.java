@@ -60,8 +60,12 @@ public class WikiSearch {
 	 * @return New WikiSearch object.
 	 */
 	public WikiSearch or(WikiSearch that) {
-        // FILL THIS IN!
-		return null;
+        Map<String, Integer> resultSet = new HashMap<String, Integer>(map);
+        for (String key : that.map.keySet()) {
+        	int relevanceScore = totalRelevance(getRelevance(key), that.getRelevance(key));
+        	resultSet.put(key, relevanceScore);
+        }
+		return new WikiSearch(resultSet);
 	}
 	
 	/**
@@ -71,8 +75,15 @@ public class WikiSearch {
 	 * @return New WikiSearch object.
 	 */
 	public WikiSearch and(WikiSearch that) {
-        // FILL THIS IN!
-		return null;
+        Map<String, Integer> resultSet = new HashMap<String, Integer>();
+        for (String key : map.keySet()) {
+        	// only add the key if it exists in both sets
+        	if (that.map.containsKey(key)) {
+        		int relevanceScore = totalRelevance(map.get(key), that.map.get(key));
+        		resultSet.put(key, relevanceScore);
+        	}
+        }
+		return new WikiSearch(resultSet);
 	}
 	
 	/**
@@ -82,8 +93,12 @@ public class WikiSearch {
 	 * @return New WikiSearch object.
 	 */
 	public WikiSearch minus(WikiSearch that) {
-        // FILL THIS IN!
-		return null;
+        Map<String, Integer> resultSet = new HashMap<String, Integer>(map);
+        for (String key : that.map.keySet()) {
+        	// remove the appropriate entries
+        	resultSet.remove(key);
+        }
+		return new WikiSearch(resultSet);
 	}
 	
 	/**
@@ -104,8 +119,19 @@ public class WikiSearch {
 	 * @return List of entries with URL and relevance.
 	 */
 	public List<Entry<String, Integer>> sort() {
-        // FILL THIS IN!
-		return null;
+        List<Entry<String, Integer>> entries = new LinkedList<Entry<String, Integer>>(map.entrySet());
+
+        // implement compareTo
+        Comparator<Entry<String, Integer>> compare = new Comparator<Entry<String, Integer>>() {
+            @Override
+            public int compare(Entry<String, Integer> e1, Entry<String, Integer> e2) {
+                return e1.getValue().compareTo(e2.getValue());
+            }
+        };
+
+        // sort
+        Collections.sort(entries, compare);
+        return entries;
 	}
 
 	/**
